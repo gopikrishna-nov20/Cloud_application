@@ -22,3 +22,33 @@ To run the code:
 5. Initialize the Terraform working directory by running terraform init
 6. Apply the Terraform configuration by running terraform apply
 7. Enter yes when prompted to confirm the deployment
+
+
+URL's to Access
+
+api_gateway_invoke_url = "https://zld557r48g.execute-api.ap-northeast-2.amazonaws.com/prod/hello"
+api_gateway_sso_invoke_url = "https://zld557r48g.execute-api.ap-northeast-2.amazonaws.com/prod/sso-hello"
+
+Here's a high-level diagram of the architecture from an end-user access perspective:
+
+1. End User: Accesses the API Gateway URL (e.g., https://api.execute-api.ap-northeast-2.amazonaws.com/prod/hello)
+2. API Gateway: Receives the request and checks for authentication using the Cognito User Pool
+    - If authenticated, proceeds to step 3
+    - If not authenticated, returns an error response
+3. Cognito User Pool: Verifies the user's identity and provides an authentication token
+4. API Gateway: Uses the authentication token to authorize the request
+5. API Gateway: Forwards the request to the Lambda function
+6. Lambda Function: Processes the request and returns a response
+7. API Gateway: Returns the response to the end user
+
+For the SSO flow:
+
+1. End User: Accesses the SSO-enabled API Gateway URL (e.g., https://api.execute-api.ap-northeast-2.amazonaws.com/prod/sso-hello)
+2. API Gateway: Redirects the user to the Cognito Hosted UI for authentication
+3. Cognito Hosted UI: Authenticates the user and provides an authorization code
+4. API Gateway: Exchanges the authorization code for an access token
+5. Cognito User Pool: Verifies the access token and provides an identity ID
+6. API Gateway: Uses the identity ID to authorize the request
+7. API Gateway: Forwards the request to the Lambda function
+8. Lambda Function: Processes the request and returns a response
+9. API Gateway: Returns the response to the end user
